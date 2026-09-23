@@ -95,7 +95,7 @@ Every method returns the response envelope's `data`, typed. Methods marked `→ 
 | Twitch | `twitch.videos(handle, { limit? })` | `/twitch/profiles/{handle}/videos` |
 | Linktree | `linktree.profile(handle)` | `/linktree/profiles/{handle}` |
 
-Path arguments are validated before any request: an empty string, `"."`, `".."` or a non-finite number (`NaN`, `Infinity`) throws a `TypeError`.
+Path arguments are validated before any request: an empty string, `"."`, `".."` or a non-finite number (`NaN`, `Infinity`) makes the call reject with a `TypeError` (the returned Promise rejects; nothing is thrown synchronously).
 
 ## Types
 

@@ -7,12 +7,12 @@ export class Bluesky {
   constructor(private readonly http: HttpClient) {}
 
   /** GET /bluesky/profiles/{handle} — full handle including the domain. */
-  profile(handle: string): Promise<BlueskyProfile> {
+  async profile(handle: string): Promise<BlueskyProfile> {
     return this.http.get(`/bluesky/profiles/${segment(handle)}`);
   }
 
   /** GET /bluesky/profiles/{handle}/posts — limit 1–100 (default 25), cursor-paginated. */
-  posts(handle: string, options: CursorPageOptions = {}): Promise<Page<BlueskyPost, BlueskyPostPage>> {
+  async posts(handle: string, options: CursorPageOptions = {}): Promise<Page<BlueskyPost, BlueskyPostPage>> {
     return cursorPage({
       cursor: options.cursor,
       load: (cursor) =>

@@ -5,7 +5,7 @@ export class Linktree {
   constructor(private readonly http: HttpClient) {}
 
   /** GET /linktree/profiles/{handle} */
-  profile(handle: string): Promise<LinktreeProfile> {
+  async profile(handle: string): Promise<LinktreeProfile> {
     return this.http.get(`/linktree/profiles/${segment(handle)}`);
   }
 }
