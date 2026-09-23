@@ -24,6 +24,12 @@ const profile = await client.instagram.profile("nasa");
 console.log(profile.username, profile.followers);
 ```
 
+From CommonJS:
+
+```js
+const { ScrapingIsNotACrime } = require("@scrapingisnotacrime/sdk");
+```
+
 Get a key at [scrapingisnotacrime.com/dashboard/api-keys](https://scrapingisnotacrime.com/dashboard/api-keys). Keys start with `sinac_`.
 
 ## Configuration
@@ -45,6 +51,8 @@ new ScrapingIsNotACrime({
 | `timeoutMs` | `30000` | Per-attempt timeout, in milliseconds. |
 | `maxRetries` | `2` | Extra attempts for 429, 502 and network errors. `0` disables retries. |
 | `fetch` | global `fetch` | Custom `fetch` implementation, for tests or proxies. |
+
+A custom `fetch` must honor `init.signal`: the SDK aborts that signal when `timeoutMs` elapses, and an implementation that ignores it cannot be interrupted, so the request waits for as long as your `fetch` does.
 
 ## Methods
 
@@ -87,9 +95,41 @@ Every method returns the response envelope's `data`, typed. Methods marked `→ 
 | Twitch | `twitch.videos(handle, { limit? })` | `/twitch/profiles/{handle}/videos` |
 | Linktree | `linktree.profile(handle)` | `/linktree/profiles/{handle}` |
 
+Path arguments are validated before any request: an empty string, `"."`, `".."` or a non-finite number (`NaN`, `Infinity`) throws a `TypeError`.
+
+## Types
+
+Every response type is exported, with field names exactly as the API sends them (snake_case). Fields the upstream platforms routinely leave empty — descriptions, bios, captions, languages, URLs of self-posts, last-broadcast info — are typed `field?: T | null`, so check them before use.
+
+The option objects and unions are exported too, so you can name them in your own code:
+
+| Type | Used by |
+|---|---|
+| `PageOptions` (`{ limit?, page? }`) | GitHub and Hacker News listings |
+| `CursorPageOptions` (`{ limit?, cursor? }`) | `bluesky.posts` |
+| `InstagramPostsOptions` (`{ count?, cursor? }`) | `instagram.posts` |
+| `AppstoreSearchOptions` (`{ country?, limit? }`) | `appstore.search` |
+| `AppstoreReviewsOptions` (`{ country?, page? }`) | `appstore.reviews` |
+| `TwitchVideosOptions` (`{ limit? }`) | `twitch.videos` |
+| `GithubTrendingOptions` (`{ since?, language?, limit? }`) | `github.trending` |
+| `GithubTrendingSince` (`"daily" \| "weekly" \| "monthly"`) | `github.trending` |
+| `HackernewsFeed` (`"top" \| "new" \| "best" \| "ask" \| "show" \| "job"`) | `hackernews.feed` |
+
+Paginated responses follow `<Platform><Item>Page`: `InstagramTimelinePage`, `AppstoreReviewPage`, `GithubUserPage`, `GithubRepositoryPage`, `GithubRepositorySearchPage`, `HackernewsStoryPage`, `HackernewsUserCommentPage`, `BlueskyPostPage`.
+
+`instagram.latestPosts` returns media typed `InstagramLatestPostImage | InstagramLatestPostVideo`. Narrow with the `in` operator to reach the video-only fields:
+
+```ts
+const { medias } = await client.instagram.latestPosts("nasa");
+for (const media of medias) {
+  if ("video_url" in media) console.log("video", media.video_url, media.video_views);
+  else console.log("image", media.display_url);
+}
+```
+
 ## Pagination
 
-Methods marked `→ Page` return a `Page<T, R>`, an `AsyncIterable<T>`:
+Methods marked `→ Page` return a `Page<T, R>`, an `AsyncIterable<T>` (`Page` is exported as a type; instances only come from these methods):
 
 ```ts
 interface Page<T, R> extends AsyncIterable<T> {
@@ -141,6 +181,10 @@ try {
   else throw error;
 }
 ```
+
+### Mixing `import` and `require`
+
+The package ships an ESM build and a CommonJS build. If one application loads both (for example, your code uses `import` while a dependency uses `require`), there are two copies of every error class, and an error thrown by one copy is not `instanceof` the other's classes. Stick to one module system, or check `error.name` (e.g. `"NotFoundError"`) or `error.status` instead of `instanceof`.
 
 ## Retries
 
