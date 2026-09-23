@@ -68,11 +68,8 @@ export interface InstagramClipsMusicAttribution {
   uses_original_audio: boolean;
 }
 
-/**
- * A post in a profile's latest-posts timeline. Video entries carry extra fields
- * (video_views, video_url, has_audio, clips_music_attribution_info) that image entries lack.
- */
-export interface InstagramLatestPostMedia {
+/** An image post in a profile's latest-posts timeline. */
+export interface InstagramLatestPostImage {
   id: string;
   shortcode: string;
   type: string;
@@ -83,11 +80,31 @@ export interface InstagramLatestPostMedia {
   thumbnail_resources?: unknown | null;
   display_url: string;
   taken_at_timestamp: string;
-  video_views?: number;
-  video_url?: string;
-  has_audio?: boolean;
-  clips_music_attribution_info?: InstagramClipsMusicAttribution | null;
 }
+
+/**
+ * A video post in a profile's latest-posts timeline — carries extra fields
+ * (video_views, video_url, has_audio, clips_music_attribution_info) the image posts lack.
+ */
+export interface InstagramLatestPostVideo {
+  id: string;
+  shortcode: string;
+  type: string;
+  video_views: number;
+  comments: number;
+  likes: number;
+  caption: string;
+  location?: unknown | null;
+  thumbnail_resources?: unknown | null;
+  display_url: string;
+  video_url: string;
+  has_audio: boolean;
+  clips_music_attribution_info?: InstagramClipsMusicAttribution | null;
+  taken_at_timestamp: string;
+}
+
+/** A post in a profile's latest-posts timeline — an image post or a video post; `type` tells them apart. */
+export type InstagramLatestPostMedia = InstagramLatestPostImage | InstagramLatestPostVideo;
 
 /** GET /instagram/profile/{username}/timeline/latest */
 export interface InstagramLatestPosts {
