@@ -196,8 +196,22 @@ The delay before each retry uses the `Retry-After` header when the API sends one
 
 Calling this SDK directly from a browser exposes your API key to anyone who opens the network tab. Call it from your server, and proxy any client-facing requests through your own backend.
 
+## Releases and changelog
+
+Every merge to `main` is released automatically: the version comes from the commit messages since the last release, following [Conventional Commits](https://www.conventionalcommits.org/).
+
+| Commits since the last release | New version (while in 0.x) |
+|---|---|
+| only `docs:`, `chore:`, `test:`, `ci:`, `build:`, `refactor:` | none |
+| at least one `fix:` | patch (`0.1.0` → `0.1.1`) |
+| at least one `feat:` | minor (`0.1.1` → `0.2.0`) |
+| `feat!:` or a `BREAKING CHANGE:` footer | minor while in 0.x |
+
+The pipeline tags `vX.Y.Z`, publishes the GitHub Release with the notes, and publishes to npm with provenance. The changelog is the [Releases page](https://github.com/ScrapingIsNotACrime/sdk-nodejs/releases); the version in the repository's `package.json` stays `0.0.0-development` on purpose.
+
 ## Links
 
 - Docs: https://scrapingisnotacrime.com/docs
 - Pricing: https://scrapingisnotacrime.com/#pricing
+- Releases: https://github.com/ScrapingIsNotACrime/sdk-nodejs/releases
 - License: [MIT](./LICENSE)
