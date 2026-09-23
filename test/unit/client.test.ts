@@ -14,7 +14,7 @@ describe("ScrapingIsNotACrime", () => {
 
   it("exposes one namespace per platform", () => {
     const client = new ScrapingIsNotACrime({ apiKey: "sinac_test", fetch: (async () => new Response()) as typeof fetch });
-    for (const name of ["linktree", "twitch", "youtube", "tiktok", "appstore", "bluesky"] as const) {
+    for (const name of ["linktree", "twitch", "youtube", "tiktok", "appstore", "bluesky", "github", "hackernews"] as const) {
       expect(typeof client[name]).toBe("object");
     }
   });
