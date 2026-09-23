@@ -52,7 +52,7 @@ new ScrapingIsNotACrime({
 | `maxRetries` | `2` | Extra attempts for 429, 502 and network errors. `0` disables retries. |
 | `fetch` | global `fetch` | Custom `fetch` implementation, for tests or proxies. |
 
-A custom `fetch` must honor `init.signal`: the SDK aborts that signal when `timeoutMs` elapses, and an implementation that ignores it cannot be interrupted, so the request waits for as long as your `fetch` does.
+A custom `fetch` receives an `init.signal` that the SDK aborts when `timeoutMs` elapses. Honoring it lets your implementation stop the underlying request; if it ignores the signal, the SDK still gives up on that attempt after `timeoutMs` and reports a `ConnectionError`, but the abandoned request keeps running inside your `fetch`.
 
 ## Methods
 

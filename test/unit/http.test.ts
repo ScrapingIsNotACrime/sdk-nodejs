@@ -159,6 +159,34 @@ describe("HttpClient.get", () => {
     expect((error as Error).message).toMatch(/timed out after 20 ms/);
   });
 
+  it("times out even when a custom fetch ignores the abort signal", async () => {
+    const neverSettles = vi.fn(() => new Promise<Response>(() => {}));
+    const config = resolveConfig(
+      { apiKey: "sinac_test", fetch: neverSettles as typeof fetch, timeoutMs: 20, maxRetries: 0 },
+      {},
+    );
+    const http = new HttpClient(config, { sleep: async () => {} });
+    const error = await http.get("/x").catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ConnectionError);
+    expect((error as Error).message).toMatch(/timed out after 20 ms/);
+  });
+
+  it("times out a body read that ignores the abort signal", async () => {
+    const stalledBody = vi.fn(async () => {
+      const response = new Response("{}");
+      Object.defineProperty(response, "text", { value: () => new Promise<string>(() => {}) });
+      return response;
+    });
+    const config = resolveConfig(
+      { apiKey: "sinac_test", fetch: stalledBody as typeof fetch, timeoutMs: 20, maxRetries: 0 },
+      {},
+    );
+    const http = new HttpClient(config, { sleep: async () => {} });
+    const error = await http.get("/x").catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ConnectionError);
+    expect((error as Error).message).toMatch(/timed out after 20 ms/);
+  });
+
   it("throws APIError for a 2xx body without an envelope", async () => {
     const { http } = setup([{ status: 200, body: "<html>proxy</html>" }]);
     await expect(http.get("/x")).rejects.toBeInstanceOf(APIError);
