@@ -4,6 +4,7 @@ import { Appstore } from "./resources/appstore.js";
 import { Bluesky } from "./resources/bluesky.js";
 import { Github } from "./resources/github.js";
 import { Hackernews } from "./resources/hackernews.js";
+import { Instagram } from "./resources/instagram.js";
 import { Linktree } from "./resources/linktree.js";
 import { Tiktok } from "./resources/tiktok.js";
 import { Twitch } from "./resources/twitch.js";
@@ -18,6 +19,7 @@ export class ScrapingIsNotACrime {
   readonly linktree: Linktree;
   readonly github: Github;
   readonly hackernews: Hackernews;
+  readonly instagram: Instagram;
 
   constructor(options: ClientOptions = {}) {
     const http = new HttpClient(resolveConfig(options));
@@ -29,5 +31,6 @@ export class ScrapingIsNotACrime {
     this.linktree = new Linktree(http);
     this.github = new Github(http);
     this.hackernews = new Hackernews(http);
+    this.instagram = new Instagram(http);
   }
 }
