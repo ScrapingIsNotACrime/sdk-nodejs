@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 import { ScrapingIsNotACrime } from "../../src/index.js";
 import { resolveConfig } from "../../src/config.js";
 import { HttpClient } from "../../src/http.js";
+import { USER_COMMENT_OPTIONAL, nullableFor } from "./nullable.js";
 import { sameShape } from "./shape.js";
 
 const enabled = Boolean(process.env.SCRAPINGISNOTACRIME_API_KEY);
@@ -20,11 +21,13 @@ describe.skipIf(!enabled)("smoke: real API", () => {
   const http = enabled ? new HttpClient(resolveConfig({})) : undefined;
   const client = enabled ? new ScrapingIsNotACrime() : undefined;
 
-  it.each(fixtures)("$id matches the documented shape", async ({ request, response }) => {
+  const documented = (id: string) => fixtures.find((f) => f.id === id)!.response.data;
+
+  it.each(fixtures)("$id matches the documented shape", async ({ id, request, response }) => {
     const [path, search] = String(request).split("?");
     const query = Object.fromEntries(new URLSearchParams(search ?? ""));
     const data = await http!.get(path!, query);
-    expect(sameShape(data, response.data)).toEqual([]);
+    expect(sameShape(data, response.data, nullableFor(id))).toEqual([]);
   });
 
   it("endpoints without documented examples respond", async () => {
@@ -39,5 +42,13 @@ describe.skipIf(!enabled)("smoke: real API", () => {
     }
     expect(following.data.has_more).toBeTypeOf("boolean");
     expect(comments.data.has_more).toBeTypeOf("boolean");
+
+    // No examples of their own: compare against the closest documented shape.
+    expect(sameShape(media, documented("ig-media-by-id"), nullableFor("ig-media-by-id"))).toEqual([]);
+    expect(sameShape(following.data, documented("gh-followers"), nullableFor("gh-followers"))).toEqual([]);
+    if (comments.items.length > 0) {
+      const commentNode = documented("hn-item").comments[0];
+      expect(sameShape(comments.items[0], commentNode, USER_COMMENT_OPTIONAL)).toEqual([]);
+    }
   });
 });
