@@ -1,32 +1,40 @@
 name: Release
 
+# Every push to main (i.e. every merged PR) runs this. semantic-release reads
+# the commits since the last v* tag: fix → patch, feat → minor, and while the
+# SDK is 0.x a breaking change is also a minor (see .releaserc.json). docs,
+# chore, test, ci and refactor commits alone publish nothing.
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
 
 permissions:
-  contents: read
-  id-token: write
+  contents: write # create the v* tag and the GitHub Release
+  id-token: write # npm Trusted Publishing (OIDC) + provenance
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
-  publish:
-    # Disabled until the npm package name is decided and NPM_TOKEN exists:
-    # set the repository variable NPM_PUBLISH_ENABLED to "true" to enable.
+  release:
+    # Master switch: set the repository variable NPM_PUBLISH_ENABLED to "true".
     if: vars.NPM_PUBLISH_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org
           cache: npm
+      # Trusted Publishing needs npm >= 11.5.1; Node 22 ships npm 10.
+      - run: npm install -g npm@latest
       - run: npm ci
+      - run: npm run lint
       - run: npm run typecheck
       - run: npm test
-      - run: npm run build
-      - name: Check the tag matches package.json
-        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
-      - run: npm publish --provenance --access public
+      - run: npx semantic-release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

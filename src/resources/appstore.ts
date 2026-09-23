@@ -9,12 +9,12 @@ export class Appstore {
   constructor(private readonly http: HttpClient) {}
 
   /** GET /appstore/search — country defaults to "us", limit 1–200 (default 10). */
-  search(term: string, options: AppstoreSearchOptions = {}): Promise<AppstoreSearch> {
+  async search(term: string, options: AppstoreSearchOptions = {}): Promise<AppstoreSearch> {
     return this.http.get("/appstore/search", { term, country: options.country, limit: options.limit });
   }
 
   /** GET /appstore/reviews — pages 1–10 (Apple's cap); the API returns 400 past page 10. */
-  reviews(appId: string, options: AppstoreReviewsOptions = {}): Promise<Page<AppstoreReview, AppstoreReviewPage>> {
+  async reviews(appId: string, options: AppstoreReviewsOptions = {}): Promise<Page<AppstoreReview, AppstoreReviewPage>> {
     return numberedPage({
       page: options.page ?? 1,
       load: (page) => this.http.get<AppstoreReviewPage>("/appstore/reviews", { appId, country: options.country, page }),

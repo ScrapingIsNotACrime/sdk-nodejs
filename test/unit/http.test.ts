@@ -78,10 +78,10 @@ describe("HttpClient.get", () => {
     expect(() => segment(value)).toThrow(message);
   });
 
-  it("rejects a bad segment before any request is sent", () => {
+  it("rejects a bad segment before any request is sent", async () => {
     const { fetch, client } = clientReturning({ message: "ok", data: {} });
-    expect(() => client.github.profile("..")).toThrow(TypeError);
-    expect(() => client.hackernews.item(Number.NaN)).toThrow(TypeError);
+    await expect(client.github.profile("..")).rejects.toBeInstanceOf(TypeError);
+    await expect(client.hackernews.item(Number.NaN)).rejects.toBeInstanceOf(TypeError);
     expect(fetch).not.toHaveBeenCalled();
   });
 

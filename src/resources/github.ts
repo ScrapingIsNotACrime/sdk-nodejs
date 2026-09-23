@@ -15,32 +15,32 @@ export class Github {
   constructor(private readonly http: HttpClient) {}
 
   /** GET /github/profiles/{handle} */
-  profile(handle: string): Promise<GithubProfile> {
+  async profile(handle: string): Promise<GithubProfile> {
     return this.http.get(`/github/profiles/${segment(handle)}`);
   }
 
   /** GET /github/profiles/{handle}/followers — limit 1–100 (default 30), 1-based pages. */
-  followers(handle: string, options: PageOptions = {}): Promise<Page<GithubUser, GithubUserPage>> {
+  async followers(handle: string, options: PageOptions = {}): Promise<Page<GithubUser, GithubUserPage>> {
     return this.list(`/github/profiles/${segment(handle)}/followers`, {}, options);
   }
 
   /** GET /github/profiles/{handle}/following — limit 1–100 (default 30), 1-based pages. */
-  following(handle: string, options: PageOptions = {}): Promise<Page<GithubUser, GithubUserPage>> {
+  async following(handle: string, options: PageOptions = {}): Promise<Page<GithubUser, GithubUserPage>> {
     return this.list(`/github/profiles/${segment(handle)}/following`, {}, options);
   }
 
   /** GET /github/profiles/{handle}/repositories — limit 1–100 (default 30), 1-based pages. */
-  repositories(handle: string, options: PageOptions = {}): Promise<Page<GithubRepository, GithubRepositoryPage>> {
+  async repositories(handle: string, options: PageOptions = {}): Promise<Page<GithubRepository, GithubRepositoryPage>> {
     return this.list(`/github/profiles/${segment(handle)}/repositories`, {}, options);
   }
 
   /** GET /github/repositories — q in GitHub search syntax; limit 1–100 (default 30), 1-based pages. */
-  searchRepositories(q: string, options: PageOptions = {}): Promise<Page<GithubRepository, GithubRepositorySearchPage>> {
+  async searchRepositories(q: string, options: PageOptions = {}): Promise<Page<GithubRepository, GithubRepositorySearchPage>> {
     return this.list("/github/repositories", { q }, options);
   }
 
   /** GET /github/trending/repositories — since defaults to "daily"; limit 1–100 (default 30). */
-  trending(options: GithubTrendingOptions = {}): Promise<GithubTrending> {
+  async trending(options: GithubTrendingOptions = {}): Promise<GithubTrending> {
     return this.http.get("/github/trending/repositories", {
       since: options.since,
       language: options.language,
