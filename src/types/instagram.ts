@@ -75,7 +75,8 @@ export interface InstagramLatestPostImage {
   type: string;
   comments: number;
   likes: number;
-  caption: string;
+  /** Null when the post has no caption. */
+  caption?: string | null;
   location?: unknown | null;
   thumbnail_resources?: unknown | null;
   display_url: string;
@@ -93,7 +94,8 @@ export interface InstagramLatestPostVideo {
   video_views: number;
   comments: number;
   likes: number;
-  caption: string;
+  /** Null when the post has no caption. */
+  caption?: string | null;
   location?: unknown | null;
   thumbnail_resources?: unknown | null;
   display_url: string;
@@ -118,7 +120,8 @@ export interface InstagramMedia {
   id: string;
   shortcode: string;
   type: string;
-  caption: string;
+  /** Null when the post has no caption. */
+  caption?: string | null;
   likes: number;
   comments: number;
   preview_comments: unknown[];
@@ -165,7 +168,8 @@ export interface InstagramMediaDetail {
   type: string;
   comments: number;
   likes: number;
-  caption: string;
+  /** Null when the post has no caption. */
+  caption?: string | null;
   location?: unknown | null;
   thumbnail_resources?: unknown | null;
   display_url: string;
@@ -210,7 +214,8 @@ export interface InstagramReel {
   video_views: number;
   comments: number;
   likes: number;
-  caption: string;
+  /** Null when the post has no caption. */
+  caption?: string | null;
   location?: unknown | null;
   thumbnail_resources?: unknown | null;
   display_url: string;

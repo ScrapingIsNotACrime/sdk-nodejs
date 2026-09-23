@@ -5,7 +5,8 @@ export interface HackernewsStory {
   author: string;
   points: number;
   num_comments: number;
-  url: string;
+  /** External link; null for self-posts (Ask HN, etc.). */
+  url?: string | null;
   /** Self-post body as HTML; null for link posts. */
   text?: string | null;
   created_at: string;
@@ -33,10 +34,12 @@ export interface HackernewsComment {
 export interface HackernewsItem {
   id: number;
   type: string;
-  title: string;
+  /** Null for comments and other untitled item types. */
+  title?: string | null;
   author: string;
-  points: number;
-  url: string;
+  points?: number | null;
+  /** External link; null for self-posts. */
+  url?: string | null;
   /** Self-post body as HTML; null for link posts. */
   text?: string | null;
   created_at: string;
@@ -48,15 +51,25 @@ export interface HackernewsItem {
 export interface HackernewsUser {
   username: string;
   karma: number;
-  about: string;
+  /** Profile bio as HTML; null when the user has not written one. */
+  about?: string | null;
   created_at: string;
   submission_count: number;
   hn_url: string;
 }
 
+/** A comment in a user's comment listing; unlike item-tree nodes, `replies` may be absent. */
+export interface HackernewsUserComment {
+  id: number;
+  author: string;
+  text: string;
+  created_at: string;
+  replies?: HackernewsComment[];
+}
+
 /** GET /hackernews/users/{username}/comments — same page envelope as the other listings. */
-export interface HackernewsCommentPage {
-  items: HackernewsComment[];
+export interface HackernewsUserCommentPage {
+  items: HackernewsUserComment[];
   total: number;
   page: number;
   has_more: boolean;

@@ -2,12 +2,14 @@
 export interface GithubProfile {
   username: string;
   id: number;
-  name: string;
+  /** Null when the user has not set a display name. */
+  name?: string | null;
   /** Null when the user has not set a bio. */
   bio?: string | null;
-  company: string;
-  location: string;
-  blog: string;
+  company?: string | null;
+  location?: string | null;
+  /** Website URL; empty or null when the user has not set one. */
+  blog?: string | null;
   public_repos: number;
   followers: number;
   following: number;
@@ -36,10 +38,12 @@ export interface GithubUserPage {
 export interface GithubRepository {
   name: string;
   full_name: string;
-  description: string;
+  /** Null when the repository has no description. */
+  description?: string | null;
   stars: number;
   forks: number;
-  language: string;
+  /** Primary language; null when GitHub has not detected one. */
+  language?: string | null;
   topics: string[];
   is_fork: boolean;
   is_archived: boolean;

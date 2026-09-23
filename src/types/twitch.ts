@@ -18,7 +18,8 @@ export interface TwitchProfile {
   is_live: boolean;
   /** Current viewer count while live; null whenever is_live is false. */
   live_viewers?: number | null;
-  last_broadcast: TwitchBroadcast;
+  /** Null when the channel has never broadcast (or the info is unavailable). */
+  last_broadcast?: TwitchBroadcast | null;
   url: string;
 }
 

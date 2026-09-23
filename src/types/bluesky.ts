@@ -3,8 +3,10 @@ export interface BlueskyProfile {
   did: string;
   handle: string;
   display_name: string;
-  description: string;
-  avatar: string;
+  /** Null when the profile has no bio. */
+  description?: string | null;
+  /** Null when the profile has no avatar set. */
+  avatar?: string | null;
   /** Banner image URL; null when the profile has none set. */
   banner?: string | null;
   followers: number;

@@ -1,8 +1,8 @@
 import { type HttpClient, segment } from "../http.js";
 import { type Page, numberedPage } from "../pagination.js";
 import type {
-  HackernewsComment,
-  HackernewsCommentPage,
+  HackernewsUserComment,
+  HackernewsUserCommentPage,
   HackernewsItem,
   HackernewsStory,
   HackernewsStoryPage,
@@ -41,7 +41,7 @@ export class Hackernews {
   }
 
   /** GET /hackernews/users/{username}/comments — limit 1–50 (default 20), 0-based pages. */
-  comments(username: string, options: PageOptions = {}): Promise<Page<HackernewsComment, HackernewsCommentPage>> {
+  comments(username: string, options: PageOptions = {}): Promise<Page<HackernewsUserComment, HackernewsUserCommentPage>> {
     return this.list(`/hackernews/users/${segment(username)}/comments`, {}, options);
   }
 
