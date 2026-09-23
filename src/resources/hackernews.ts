@@ -1,4 +1,5 @@
 import { type HttpClient, segment } from "../http.js";
+import type { HackernewsFeed, PageOptions } from "../options.js";
 import { type Page, numberedPage } from "../pagination.js";
 import type {
   HackernewsUserComment,
@@ -9,8 +10,6 @@ import type {
   HackernewsUser,
 } from "../types/hackernews.js";
 
-type PageOptions = { limit?: number; page?: number };
-export type HackernewsFeed = "top" | "new" | "best" | "ask" | "show" | "job";
 
 export class Hackernews {
   constructor(private readonly http: HttpClient) {}

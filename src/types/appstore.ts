@@ -37,7 +37,7 @@ export interface AppstoreReview {
 }
 
 /** GET /appstore/reviews */
-export interface AppstoreReviews {
+export interface AppstoreReviewPage {
   appId: string;
   country: string;
   page: number;

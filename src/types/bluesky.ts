@@ -32,7 +32,7 @@ export interface BlueskyPost {
 }
 
 /** GET /bluesky/profiles/{handle}/posts */
-export interface BlueskyPosts {
+export interface BlueskyPostPage {
   posts: BlueskyPost[];
   next_cursor?: string | null;
   has_more: boolean;

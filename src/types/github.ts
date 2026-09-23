@@ -61,7 +61,7 @@ export interface GithubRepositoryPage {
 }
 
 /** GET /github/repositories */
-export interface GithubRepositorySearch {
+export interface GithubRepositorySearchPage {
   items: GithubRepository[];
   total: number;
   page: number;

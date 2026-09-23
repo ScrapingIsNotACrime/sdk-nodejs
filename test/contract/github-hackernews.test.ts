@@ -13,7 +13,7 @@ import hnUserSubmissions from "../fixtures/hn-user-submissions.json" with { type
 import type {
   GithubProfile,
   GithubRepositoryPage,
-  GithubRepositorySearch,
+  GithubRepositorySearchPage,
   GithubTrending,
   GithubUserPage,
 } from "../../src/types/github.js";
@@ -28,7 +28,7 @@ export const gates: unknown[] = [
   ghProfile.response.data satisfies GithubProfile,
   ghFollowers.response.data satisfies GithubUserPage,
   ghRepos.response.data satisfies GithubRepositoryPage,
-  ghSearchRepos.response.data satisfies GithubRepositorySearch,
+  ghSearchRepos.response.data satisfies GithubRepositorySearchPage,
   ghTrending.response.data satisfies GithubTrending,
   hnFeed.response.data satisfies HackernewsStoryPage,
   hnItem.response.data satisfies HackernewsItem,

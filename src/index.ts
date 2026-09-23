@@ -14,7 +14,7 @@ export {
   APIError,
 } from "./errors.js";
 export { VERSION } from "./version.js";
-export type { HackernewsFeed } from "./resources/hackernews.js";
+export type * from "./options.js";
 export type * from "./types/instagram.js";
 export type * from "./types/tiktok.js";
 export type * from "./types/youtube.js";

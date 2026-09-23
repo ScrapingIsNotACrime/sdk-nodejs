@@ -1,16 +1,15 @@
 import { type HttpClient, segment } from "../http.js";
+import type { GithubTrendingOptions, PageOptions } from "../options.js";
 import { type Page, numberedPage } from "../pagination.js";
 import type {
   GithubProfile,
   GithubRepository,
   GithubRepositoryPage,
-  GithubRepositorySearch,
+  GithubRepositorySearchPage,
   GithubTrending,
   GithubUser,
   GithubUserPage,
 } from "../types/github.js";
-
-type PageOptions = { limit?: number; page?: number };
 
 export class Github {
   constructor(private readonly http: HttpClient) {}
@@ -36,14 +35,12 @@ export class Github {
   }
 
   /** GET /github/repositories — q in GitHub search syntax; limit 1–100 (default 30), 1-based pages. */
-  searchRepositories(q: string, options: PageOptions = {}): Promise<Page<GithubRepository, GithubRepositorySearch>> {
+  searchRepositories(q: string, options: PageOptions = {}): Promise<Page<GithubRepository, GithubRepositorySearchPage>> {
     return this.list("/github/repositories", { q }, options);
   }
 
   /** GET /github/trending/repositories — since defaults to "daily"; limit 1–100 (default 30). */
-  trending(
-    options: { since?: "daily" | "weekly" | "monthly"; language?: string; limit?: number } = {},
-  ): Promise<GithubTrending> {
+  trending(options: GithubTrendingOptions = {}): Promise<GithubTrending> {
     return this.http.get("/github/trending/repositories", {
       since: options.since,
       language: options.language,

@@ -30,3 +30,27 @@ describe("public exports", () => {
     expect(sdk.VERSION).toBe(pkg.version);
   });
 });
+
+// Compile-time: the option and page types users need to name are public (checked by `tsc --noEmit`).
+export const publicTypes = {
+  since: "weekly" satisfies sdk.GithubTrendingSince,
+  feed: "top" satisfies sdk.HackernewsFeed,
+  page: { limit: 10, page: 2 } satisfies sdk.PageOptions,
+  cursor: { limit: 25, cursor: "c" } satisfies sdk.CursorPageOptions,
+  instagram: { count: 12, cursor: "c" } satisfies sdk.InstagramPostsOptions,
+  appstoreSearch: { country: "us", limit: 5 } satisfies sdk.AppstoreSearchOptions,
+  appstoreReviews: { country: "us", page: 1 } satisfies sdk.AppstoreReviewsOptions,
+  twitch: { limit: 5 } satisfies sdk.TwitchVideosOptions,
+  trending: { since: "daily", language: "php", limit: 1 } satisfies sdk.GithubTrendingOptions,
+  pages: [] as unknown as [
+    sdk.BlueskyPostPage,
+    sdk.AppstoreReviewPage,
+    sdk.GithubUserPage,
+    sdk.GithubRepositoryPage,
+    sdk.GithubRepositorySearchPage,
+    sdk.HackernewsStoryPage,
+    sdk.HackernewsUserCommentPage,
+    sdk.InstagramTimelinePage,
+    sdk.Page<sdk.HackernewsUserComment, sdk.HackernewsUserCommentPage>,
+  ],
+};

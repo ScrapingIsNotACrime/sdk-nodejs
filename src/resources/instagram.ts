@@ -1,4 +1,5 @@
 import { type HttpClient, segment } from "../http.js";
+import type { InstagramPostsOptions } from "../options.js";
 import { type Page, cursorPage } from "../pagination.js";
 import type {
   InstagramContact,
@@ -33,10 +34,7 @@ export class Instagram {
   }
 
   /** GET /instagram/profile/{username}/timeline — full history, cursor-paginated; count 1–50 (default 12). */
-  posts(
-    username: string,
-    options: { count?: number; cursor?: string } = {},
-  ): Promise<Page<InstagramMedia, InstagramTimelinePage>> {
+  posts(username: string, options: InstagramPostsOptions = {}): Promise<Page<InstagramMedia, InstagramTimelinePage>> {
     return cursorPage({
       cursor: options.cursor,
       load: (cursor) =>

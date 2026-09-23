@@ -13,8 +13,8 @@ import type { LinktreeProfile } from "../../src/types/linktree.js";
 import type { TwitchProfile, TwitchVideos } from "../../src/types/twitch.js";
 import type { YoutubeChannelVideos } from "../../src/types/youtube.js";
 import type { TiktokProfile } from "../../src/types/tiktok.js";
-import type { AppstoreReviews, AppstoreSearch } from "../../src/types/appstore.js";
-import type { BlueskyPosts, BlueskyProfile } from "../../src/types/bluesky.js";
+import type { AppstoreReviewPage, AppstoreSearch } from "../../src/types/appstore.js";
+import type { BlueskyPostPage, BlueskyProfile } from "../../src/types/bluesky.js";
 
 // Compile-time gates: `tsc --noEmit` fails if a documented example doesn't fit its type.
 export const gates: unknown[] = [
@@ -24,9 +24,9 @@ export const gates: unknown[] = [
   ytVideos.response.data satisfies YoutubeChannelVideos,
   ttProfile.response.data satisfies TiktokProfile,
   asSearch.response.data satisfies AppstoreSearch,
-  asReviews.response.data satisfies AppstoreReviews,
+  asReviews.response.data satisfies AppstoreReviewPage,
   bsProfile.response.data satisfies BlueskyProfile,
-  bsPosts.response.data satisfies BlueskyPosts,
+  bsPosts.response.data satisfies BlueskyPostPage,
 ];
 
 describe("contract: small platforms", () => {
