@@ -24,6 +24,17 @@ export function segment(value: string | number): string {
   return encodeURIComponent(text);
 }
 
+/** Rejects with the signal's reason once it aborts; never resolves. */
+function abortedBy(signal: AbortSignal): Promise<never> {
+  return new Promise((_resolve, reject) => {
+    if (signal.aborted) {
+      reject(signal.reason);
+      return;
+    }
+    signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+  });
+}
+
 function snippet(text: string): string {
   const flat = text.replace(/\s+/g, " ").trim();
   return flat.length > 200 ? `${flat.slice(0, 200)}…` : flat;
@@ -64,16 +75,21 @@ export class HttpClient {
     controller: AbortController,
   ): Promise<{ ok: true; response: Response; text: string } | { ok: false; error: ConnectionError }> {
     try {
-      const response = await this.config.fetch(url, {
-        method: "GET",
-        headers: {
-          "X-Api-Key": this.config.apiKey,
-          Accept: "application/json",
-          "User-Agent": `scrapingisnotacrime-node/${VERSION}`,
-        },
-        signal: controller.signal,
-      });
-      const text = await response.text();
+      const request = (async () => {
+        const response = await this.config.fetch(url, {
+          method: "GET",
+          headers: {
+            "X-Api-Key": this.config.apiKey,
+            Accept: "application/json",
+            "User-Agent": `scrapingisnotacrime-node/${VERSION}`,
+          },
+          signal: controller.signal,
+        });
+        return { response, text: await response.text() };
+      })();
+      // A custom fetch (or its body stream) may ignore the signal; racing
+      // against the abort guarantees timeoutMs is honored regardless.
+      const { response, text } = await Promise.race([request, abortedBy(controller.signal)]);
       return { ok: true, response, text };
     } catch (cause) {
       const message = controller.signal.aborted
