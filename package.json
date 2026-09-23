@@ -1,0 +1,63 @@
+{
+  "name": "@scrapingisnotacrime/sdk",
+  "version": "0.1.0",
+  "description": "Official Node.js/TypeScript SDK for the ScrapingIsNotACrime public data API — Instagram, TikTok, YouTube, GitHub, Hacker News, Bluesky, Twitch, App Store and Linktree.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ScrapingIsNotACrime/sdk-nodejs.git"
+  },
+  "homepage": "https://scrapingisnotacrime.com/docs",
+  "keywords": [
+    "scraping",
+    "api",
+    "instagram",
+    "tiktok",
+    "youtube",
+    "github",
+    "hackernews",
+    "bluesky",
+    "twitch",
+    "linktree",
+    "appstore"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:smoke": "vitest run --config vitest.smoke.config.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.2",
+    "eslint": "^10.11.0",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^5.0.1"
+  }
+}
