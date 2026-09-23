@@ -1,3 +1,4 @@
+import { inspect } from "node:util";
 import { describe, expect, it, vi } from "vitest";
 import { cursorPage, numberedPage } from "../../src/pagination.js";
 
@@ -102,5 +103,21 @@ describe("numberedPage", () => {
     });
     expect(await collect(page)).toEqual([9, 10]);
     expect(load).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("Page", () => {
+  it("keeps the next-page loader private (not enumerable, not inspectable)", async () => {
+    const page = await numberedPage({
+      load: async (n: number) => ({ items: [n], has_more: n < 1 }),
+      page: 0,
+      items: (d) => d.items,
+      hasMore: (d) => d.has_more,
+    });
+    expect(page.hasMore).toBe(true);
+    expect("loadNext" in page).toBe(false);
+    expect(Object.keys(page)).not.toContain("loadNext");
+    expect(inspect(page)).not.toMatch(/loadNext|Function/);
+    expect(await collect(page)).toEqual([0, 1]);
   });
 });

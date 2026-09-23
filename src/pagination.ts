@@ -1,13 +1,19 @@
+/** One page of a paginated listing; iterate it with `for await` to walk every following page lazily. */
 export class Page<T, R> implements AsyncIterable<T> {
+  readonly #loadNext: (() => Promise<Page<T, R>>) | undefined;
+
+  /** @internal Pages are created by the paginated resource methods. */
   constructor(
     /** The full response of this page (e.g. to read `total`). */
     readonly data: R,
     readonly items: T[],
     readonly hasMore: boolean,
-    private readonly loadNext: (() => Promise<Page<T, R>>) | undefined,
+    loadNext: (() => Promise<Page<T, R>>) | undefined,
     readonly nextCursor?: string,
     readonly nextPage?: number,
-  ) {}
+  ) {
+    this.#loadNext = loadNext;
+  }
 
   /** Iterates every item from this page onward, fetching further pages lazily. */
   async *[Symbol.asyncIterator](): AsyncIterator<T> {
@@ -15,8 +21,9 @@ export class Page<T, R> implements AsyncIterable<T> {
     let page: Page<T, R> = this;
     for (;;) {
       yield* page.items;
-      if (!page.hasMore || page.items.length === 0 || !page.loadNext) return;
-      page = await page.loadNext();
+      const loadNext = page.#loadNext;
+      if (!page.hasMore || page.items.length === 0 || !loadNext) return;
+      page = await loadNext();
     }
   }
 }

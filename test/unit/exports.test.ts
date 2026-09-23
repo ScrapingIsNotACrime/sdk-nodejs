@@ -2,10 +2,9 @@ import { describe, expect, it } from "vitest";
 import * as sdk from "../../src/index.js";
 
 describe("public exports", () => {
-  it("exports the client, errors, Page and VERSION", () => {
+  it("exports the client, errors and VERSION", () => {
     for (const name of [
       "ScrapingIsNotACrime",
-      "Page",
       "ScrapingIsNotACrimeError",
       "BadRequestError",
       "AuthenticationError",
@@ -20,6 +19,10 @@ describe("public exports", () => {
       expect(sdk, name).toHaveProperty(name);
     }
     expect(sdk.default).toBe(sdk.ScrapingIsNotACrime);
+  });
+
+  it("exports Page as a type only (instances come from paginated methods)", () => {
+    expect(sdk).not.toHaveProperty("Page");
   });
 
   it("keeps VERSION in sync with package.json", async () => {

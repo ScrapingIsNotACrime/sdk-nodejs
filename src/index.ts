@@ -1,7 +1,7 @@
 export { ScrapingIsNotACrime } from "./client.js";
 export { ScrapingIsNotACrime as default } from "./client.js";
 export type { ClientOptions } from "./config.js";
-export { Page } from "./pagination.js";
+export type { Page } from "./pagination.js";
 export {
   ScrapingIsNotACrimeError,
   BadRequestError,
