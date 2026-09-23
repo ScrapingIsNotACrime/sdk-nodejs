@@ -12,8 +12,16 @@ interface Internals {
 
 const defaultSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+/** Encodes one path segment; rejects values that would drop or climb a path level. */
 export function segment(value: string | number): string {
-  return encodeURIComponent(String(value));
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    throw new TypeError(`Invalid path segment: ${value} is not a finite number.`);
+  }
+  const text = String(value);
+  if (text === "" || text === "." || text === "..") {
+    throw new TypeError(`Invalid path segment: ${JSON.stringify(text)}.`);
+  }
+  return encodeURIComponent(text);
 }
 
 function snippet(text: string): string {

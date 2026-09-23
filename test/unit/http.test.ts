@@ -10,6 +10,7 @@ import {
 } from "../../src/errors.js";
 import { HttpClient, segment } from "../../src/http.js";
 import { VERSION } from "../../src/version.js";
+import { clientReturning } from "../contract/harness.js";
 
 type Reply = { status: number; body: unknown; headers?: Record<string, string> } | Error;
 
@@ -61,6 +62,27 @@ describe("HttpClient.get", () => {
     expect(segment("a/b")).toBe("a%2Fb");
     expect(segment("josé#1")).toBe("jos%C3%A9%231");
     expect(segment(8863)).toBe("8863");
+    expect(segment("a.b")).toBe("a.b");
+    expect(segment("...")).toBe("...");
+  });
+
+  it.each([
+    ["an empty string", "", /""/],
+    ["a dot segment", ".", /"\."/],
+    ["a dot-dot segment", "..", /"\.\."/],
+    ["NaN", Number.NaN, /NaN/],
+    ["Infinity", Number.POSITIVE_INFINITY, /Infinity/],
+    ["-Infinity", Number.NEGATIVE_INFINITY, /-Infinity/],
+  ])("rejects %s as a path segment", (_label, value, message) => {
+    expect(() => segment(value)).toThrow(TypeError);
+    expect(() => segment(value)).toThrow(message);
+  });
+
+  it("rejects a bad segment before any request is sent", () => {
+    const { fetch, client } = clientReturning({ message: "ok", data: {} });
+    expect(() => client.github.profile("..")).toThrow(TypeError);
+    expect(() => client.hackernews.item(Number.NaN)).toThrow(TypeError);
+    expect(fetch).not.toHaveBeenCalled();
   });
 
   it("maps error statuses and keeps the API message and request id", async () => {
