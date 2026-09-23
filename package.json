@@ -1,6 +1,6 @@
 {
   "name": "@scrapingisnotacrime/sdk",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "description": "Official Node.js/TypeScript SDK for the ScrapingIsNotACrime public data API — Instagram, TikTok, YouTube, GitHub, Hacker News, Bluesky, Twitch, App Store and Linktree.",
   "license": "MIT",
   "type": "module",
